@@ -107,7 +107,7 @@ We propose a framework designed to build a trustworthy diagnostic system for det
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[scale=0.85]{figures/20260209.png}
+  \includegraphics[scale=0.85]{figures/frame.png}
   \caption{Overview of the three-stage framework. (a) A ViT-based MIL baseline; (b) cost‑sensitive learning with threshold calibration to control false‑negative risk; (c) selective classification that abstains on uncertain samples for human review.}
   \label{fig:framework}
 \end{figure*}
@@ -303,7 +303,7 @@ To ensure stable and reproducible evaluation, we fix random seeds and enable det
 
 In clinical practice, pathologists often inspect specific high-magnification regions of interest (ROIs) to identify subtle histological growth patterns. These ROIs, however, typically exceed the input size constraints of standard neural networks. Consequently, we adopt the multiple instance learning (MIL) paradigm, which aggregates tile-level features into a whole-slide prediction without requiring pixel-level annotations.
 
-We performed a stratified 5-fold cross-validation evaluation at the image level using 5‑fold cross‑validation. In each fold, the ViT‑MIL model was re‑initialized from the same Phikon checkpoint and trained for 15 epochs under identical optimization settings. Evaluation was conducted on the held‑out fold using the last‑epoch model with a fixed threshold $\tau = 0.5$. 
+We performed a stratified 5-fold cross-validation at the image level. In each fold, the ViT‑MIL model was re‑initialized from the same Phikon checkpoint and trained for 15 epochs under identical optimization settings. Evaluation was conducted on the held‑out fold using the last‑epoch model with a fixed threshold $\tau = 0.5$. 
 
 \begin{figure}[htbp]
     \centering
@@ -722,7 +722,7 @@ On the external dataset, the baseline achieved an accuracy of 93.64\% but incurr
 We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Under both risk control and FNR control, the framework achieved well calibrated performance on the external data, closely mirroring the behavior observed on our local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}). Overall, these results demonstrate that the framework maintains satisfactory predictive accuracy and selective classification performance on external data, consistent with its performance on local data.
 
 \section{Conclusion}
-
+\textcolor{red}{In my opinion, the conclusion section is relatively underdeveloped. It is necessary to supplement a discussion on the experimental results and clarify the clinical implications of the proposed framework.}
 This paper employs cost-sensitive learning to increase model sensitivity to false negative errors during training. Through threshold calibration, false negatives are precisely controlled below a predefined level. Finally, a selective classification framework is adopted to abstain from low-confidence predictions, thereby enhancing the reliability of model outputs.
 
 However, several issues merit further investigation. First, while the NP umbrella method can control the overall FNR at a specified level, which is an algorithm and data independent guarantee, it requires a separate set of positive validation samples. In clinical practice, positive samples are often the minority class, which can exacerbate training difficulty and compromise predictive accuracy. Second, although selective classification provides a theoretical lower bound on the risk–coverage tradeoff, controlling overall risk does not necessarily guarantee control of the FNR. Although cost-sensitive learning (Case 2 in Section \ref{sec:phase3_method}) empirically reduces the FNR, its theoretical assurance remains an open question for future work.
