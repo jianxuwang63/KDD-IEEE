@@ -207,7 +207,7 @@ Assume that $\mathcal{F}$ is finite, and let $(f,g)$ be a selective classifier s
 Theorem \ref{Th2} extends the zero-risk result of \cite{el2010foundations} to a more practical $\epsilon$-risk setting, establishing a formal risk–coverage tradeoff for selective classification. This guarantee enables practitioners to safely adjust the reject threshold while maintaining a theoretically bounded error rate. The proof of Theorem \ref{Th2} is presented in Appendix \ref{S6-2}.
 \end{remark}
 
-Motivated by the risk-coverage trade-off formalized in Theorem \ref{Th2}, we implement the selective classification mechanism $(f,g)$ via a deep neural network. In this end, we design three output heads:
+Motivated by the risk-coverage trade-off formalized in Theorem \ref{Th2}, we implement the selective classification mechanism $(f,g)$ via a deep neural network. To this end, we design three output heads:
 
 \begin{itemize}
 \item \textbf{Prediction head $f(\cdot)$}: A classification head that outputs class probabilities $\mathbf{p} \in \mathbb{R}^{K-1}$, where $K$ denotes the number of classes. This head is used to generate the final predictive label $\hat{y}$.
@@ -274,7 +274,7 @@ The resulting selective classifier abstains when the confidence score falls belo
 
 \textbf{Case 3: Risk Control with Cost-sensitive Learning.}
 
-Selective inference typically pursues two objectives: controlling a risk measure while maximizing coverage. In the context of lung adenocarcinoma subtype classification, we introduce a third clinical requirement: controlling the FNR. While the threshold \(\tau_{1}^{*}\) derived from Case 1 ensures risk control, it may fail to satisfy clinical FNR constraints. To address this, we integrate the cost-sensitive learning strategy outlined in Section \ref{sec:phase1_method}, training a classifier that is explicitly sensitive to false negatives during the training phase. This approach enables a clinically meaningful trade‑off among the three objectives: risk control, FDR control, and coverage maximization.
+Selective inference typically pursues two objectives: controlling a risk measure while maximizing coverage. In the context of lung adenocarcinoma subtype classification, we introduce a third clinical requirement: controlling the FNR. While the threshold \(\tau_{1}^{*}\) derived from Case 1 ensures risk control, it may fail to satisfy clinical FNR constraints. To address this, we integrate the cost-sensitive learning strategy outlined in Section \ref{sec:phase1_method}, training a classifier that is explicitly sensitive to false negatives during the training phase. This approach enables a clinically meaningful trade‑off among the three objectives: risk control, FNR control, and coverage maximization.
 
 \textbf{Case 4: False Negative Control with Cost-sensitive Learning.}
 
@@ -707,15 +707,15 @@ On the external dataset, the baseline achieved an accuracy of 93.64\% but incurr
         \midrule
         \multicolumn{5}{c}{Case 4 ($w_{1}=5$, FNR control)} \\
         \midrule
-        $1.00\%$ & $32.22\%$ & $2.07\%$ & $0.80\%$ & $98.82\%$ \\
-        $5.00\%$ & $61.19\%$ & $4.87\%$ & $7.47\%$ & $97.23\%$ \\
-        $10.00\%$ & $90.76\%$ & $9.27\%$ & $14.93\%$ & $95.53\%$ \\
+        $1.00\%$ & $41.14\%$ & $3.25\%$ & $1.87\%$ & $98.58\%$ \\
+        $5.00\%$ & $56.70\%$ & $4.28\%$ & $3.20\%$ & $97.85\%$ \\
+        $10.00\%$ & $84.22\%$ & $10.23\%$ & $10.67\%$ & $95.27\%$ \\
         \bottomrule
     \end{tabular}
     }
 \end{table}
 
-We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Under both risk control and FNR control, the framework achieved well calibrated performance on the external data, closely mirroring the behavior observed on our local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}). Overall, these results demonstrate that the framework maintains satisfactory predictive accuracy and selective classification performance on external data, consistent with its performance on local data.
+We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Case~3 (risk control) achieves well-calibrated risk on the external data: at the $5\%$ target, the test risk is $4.87\%$ with $61.19\%$ coverage. Case~4, with explicit FNR control, reduces false negatives more aggressively. At the $5\%$ target FNR, the external FNR reaches $3.20\%$—well below the bound—with $56.70\%$ coverage and $95.72\%$ accuracy, outperforming its Case~3 counterpart in sensitivity. These trends broadly mirror those on the local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}), though coverage on the external data is moderately lower, reflecting the increased domain shift. Overall, the framework maintains consistent selective classification behavior across datasets.
 
 \section{Conclusion}
 
