@@ -1,0 +1,34 @@
+Thank you for your valuable questions.
+
+**A1**: We apologize for not including IRB details initially. IRB approval was obtained prior to the study, and all 7,133 pathology images (including Figure 1) were collected under approved protocols with informed consent. 
+
+**A2**: We have clarified this issue in our response to Q1.
+
+**A3**: The subset referred to as the ``validation subset'' should have been revised as the test set.
+
+**A4**: We will condense and reorganize Section 2.1 for greater conciseness and readability.
+
+**A5**: We will move it to the Experimental Settings in our revised version to keep the Methodology section focused.
+
+**A6**: Ordinal losses and class distance weighted CE loss are designed for multi-class tasks; the latter reduces to weighted CE for binary cases. Ordinal losses introduce hyperparameters $\gamma$ and $\delta$ (see revision). Weight $w_1$ was set at intervals of 5 based on clinician input. Critically, cost-sensitive learning offers only empirical FNR control, motivating our NP-classification for rigorous FNR guarantees.
+
+**A7**: The calibration set $\mathcal{D}_{cal}$ (Line 321) is used only for threshold selection, like a validation set. The set in Line 222 is a test set for final evaluation only. 
+
+**A8**: We will replace Figure 2(b) with an overlaid ROC plot including baseline models to clearly demonstrate relative performance in our revised version.
+
+**A9**: Across 10 different random seeds, our method achieves an average accuracy of 93.35\% and an average FNR of 16.02\%.
+
+**A10**: Section 3.2's cost-sensitive learning baseline quantifies the FNR-FPR trade-off, showing that simple loss re-weighting cannot guarantee a preset FNR, which motivates our NP-classification approach in Phase II.
+
+**A11**: We will replace the colors in Figures 3 and 6–8 with distinct patterns.
+
+**A12**: Under the baseline case, we compare our model against four popular histopathology slide models (results in the table below). Our model consistently outperforms all baselines in both accuracy and FNR.
+
+**Table 1: The prediction performance between our model and competing models.**
+| Model | ACC | AUC | FNR | FPR |
+|:---|:---:|:---:|:---:|:---:|
+| **Our Baseline (AB-MIL)** | **93.83\%** | 97.04\% | **13.82%** | 4.10% |
+| CLAM-SB (Nature BME) | 93.41% | 96.82% | 14.47% | 4.45% |
+| DS-MIL (CVPR) | 93.27% | 96.64% | 14.80% | 4.54% |
+| DTFD-MIL (CVPR) | 93.69% | **97.37%** | 15.79% | **3.74%** |
+| TransMIL | 93.13% | 97.26% | 16.12% | 4.36% |

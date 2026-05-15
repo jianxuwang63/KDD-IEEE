@@ -1,0 +1,26 @@
+Thank you for the insightful questions.
+
+**A1:**  Our paper offers three contributions: (1) Theory: Theorem 2.3 extends prior zero‑risk selective classification [10] to a more practical $\epsilon$‑risk setting with explicit guarantees for any distribution.(2) Method: First integration of cost‑sensitive learning with selective FNR control. Aligning training and calibration recovers coverage from 79.24\% to 91.02\% at 5\% FNR. (3) Generalizability: Our three‑phase framework (cost‑sensitive training → NP calibration → selective inference) is domain‑agnostic, applicable beyond medical tasks. 
+
+**A2:** We externally validated on the TRACERx 100 cohort (739 slides; micropapillary positive, N=149, \url{https://zenodo.org/records/10016027}). The base case (Table 1) achieved 93.64\% accuracy but a high FNR of 33.83\%. Applying cost-sensitive learning and NP calibration with a 5\% target FNR yielded 6.53\% actual FNR and 69.05\% accuracy — a 27.3\% FNR reduction at a 24.59\% accuracy trade-off. Results (Table 2) for selective classification are included in revised version. 
+
+**Table 1: The prediction performance of Baseline and CSL + NP.**
+| Strategy | ACC | AUC | FNR | FPR |
+|:---------|:---:|:---:|:---:|:---:|
+| Baseline | 93.64% | 90.64% | 33.83% | 3.19% |
+| **Cost-Sensitive ($w_{1}=5$)** |
+| NP (1%) | 35.49% | 92.49% | 0.67% | 72.63% |
+| NP (5%) | 69.05% | 92.49% | 6.53% | 34.05% |
+| NP (10%) | 79.41% | 92.49% | 12.00% | 21.68% |
+
+**Table 2: The selective classification performance of External Validation.**
+| Target Risk/FNR | Test Coverage | Test Risk | Test FNR | Test AUC |
+|:---------------:|:-------------:|:---------:|:--------:|:--------:|
+| **Case 3 ($w_{1}=5$, Risk control)** | | | | |
+| 1.00% | 32.22% | 2.07% | 0.80% | 98.82% |
+| 5.00% | 61.19% | 4.87% | 7.47% | 97.23% |
+| 10.00% | 90.76% | 9.27% | 14.93% | 95.53% |
+
+**A3:**  In our Case 4 configuration (Page 8, $w_{1}=10$, target FNR=5\%), the model accepts 91.02\% of cases and defers 8.98\% (\~9 per 100 patients) for pathologist review, with each deferred case requiring \~5 minutes (\~45 min/100 patients). Deferred cases are enriched for borderline MIP morphology and high inter-observer variability. The false positive rate is 16.46\%, incurring additional review costs. We will add these workload metrics (deferral rate, review time, false positive burden) to the revised manuscript.
+
+**A4:**  As discussed in our response to Q2, the external validation results confirm that the FNR is still well controlled.
