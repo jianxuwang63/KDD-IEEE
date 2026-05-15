@@ -1,0 +1,179 @@
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds, shapes.geometric}
+
+\begin{document}
+\begin{tikzpicture}[
+    font=\small,
+    % --- Box styles ---
+    box/.style={
+        rectangle, rounded corners=6pt, draw=#1, fill=#2,
+        minimum width=5.2cm, minimum height=4.6cm,
+        inner sep=10pt, very thick, align=center
+    },
+    box/.default={black!50}{white},
+    % --- Title bar ---
+    title bar/.style={
+        rectangle, rounded corners=6pt, fill=#1, text=white,
+        font=\bfseries\footnotesize, align=center, inner sep=5pt,
+        minimum width=4.4cm
+    },
+    % --- Arrow between boxes ---
+    bigarrow/.style={
+        -{Latex[length=3mm,width=3mm]}, very thick, #1
+    },
+    bigarrow/.default={black!50},
+    % --- Vertical "adds CSL" arrow ---
+    cslarrow/.style={
+        -{Latex[length=2.5mm,width=2.5mm]}, thick, #1, dashed
+    },
+    cslarrow/.default={black!50},
+]
+
+% Colors
+\definecolor{c1Top}{RGB}{48,115,170}
+\definecolor{c1Bg}{RGB}{232,240,248}
+\definecolor{c2Top}{RGB}{183,61,54}
+\definecolor{c2Bg}{RGB}{249,231,228}
+\definecolor{c3Top}{RGB}{77,139,72}
+\definecolor{c3Bg}{RGB}{232,244,229}
+\definecolor{c4Top}{RGB}{123,66,142}
+\definecolor{c4Bg}{RGB}{244,232,247}
+
+% ============================================================
+% Row 1: Standard Training
+% ============================================================
+
+% --- Case 1 ---
+\node[box={c1Top}{c1Bg}] (c1) {
+    \begin{minipage}{4.6cm}\centering
+    \textbf{\large Case 1: Risk Control}
+
+    \vspace{4pt}
+    $\widehat{R}(\tau)=\dfrac{\sum_{i\in S_\tau}\mathbb{I}(\hat{y}_i\neq y_i)}{|S_\tau|}$
+
+    \vspace{2pt}
+    $\tau_1^*=\inf\{\tau\in[0,1]\mid\widehat{R}(\tau)\leq\alpha\}$
+
+    \vspace{4pt}
+    $(f,g)_{\tau_1^*}(X)=
+    \begin{cases}
+    \mathbb{I}(f(X)>0.5), & g(X)\geq\tau_1^*\\
+    \text{abstain},          & \text{otherwise}
+    \end{cases}$
+
+    \vspace{6pt}
+    {\footnotesize\textbf{Training:} Standard Cross-Entropy}\\[1pt]
+    {\footnotesize\textbf{Calibration:} $\tau$ selected to bound risk $\leq\alpha$}
+    \end{minipage}
+};
+
+% --- Case 2 ---
+\node[box={c2Top}{c2Bg}, right=1.2cm of c1] (c2) {
+    \begin{minipage}{4.6cm}\centering
+    \textbf{\large Case 2: FNR Control}
+
+    \vspace{4pt}
+    $\widehat{\mathrm{FNR}}(\tau)=\dfrac{\sum_{i\in S_\tau}\mathbb{I}(\hat{y}_i=0\wedge y_i=1)}{|\{i\in\mathcal{D}_{\mathrm{cal}}\mid y_i=1\}|}$
+
+    \vspace{2pt}
+    $\tau_2^*=\inf\{\tau\in[0,1]\mid\widehat{\mathrm{FNR}}(\tau)\leq\alpha\}$
+
+    \vspace{4pt}
+    $(f,g)_{\tau_2^*}(X)=
+    \begin{cases}
+    \mathbb{I}(f(X)>0.5), & g(X)\geq\tau_2^*\\
+    \text{abstain},          & \text{otherwise}
+    \end{cases}$
+
+    \vspace{6pt}
+    {\footnotesize\textbf{Training:} Standard Cross-Entropy}\\[1pt]
+    {\footnotesize\textbf{Calibration:} $\tau$ selected to bound FNR $\leq\alpha$}
+    \end{minipage}
+};
+
+% --- Row 1 arrows ---
+\draw[bigarrow={c1Top}] (c1.east) -- node[above, font=\footnotesize\bfseries, text=c1Top] {$\tau_1^*$ vs.\ $\tau_2^*$} (c2.west);
+
+% ============================================================
+% Row 2: + Cost-Sensitive Learning
+% ============================================================
+
+% --- Case 3 ---
+\node[box={c3Top}{c3Bg}, below=1.8cm of c1] (c3) {
+    \begin{minipage}{4.6cm}\centering
+    \textbf{\large Case 3: Risk \& FNR Control}
+
+    \vspace{4pt}
+    {\footnotesize Same risk-based threshold $\tau_1^*$ as Case~1}
+
+    \vspace{2pt}
+    {\footnotesize\textbf{+ Cost-Sensitive Learning during training}}
+
+    \vspace{4pt}
+    $\mathcal{L}_{\mathrm{cs}} = -\frac{1}{n}\sum\bigl[w_1 y_i\log\hat{p}_i + w_0(1-y_i)\log(1-\hat{p}_i)\bigr]$
+
+    \vspace{4pt}
+    {\footnotesize $w_1>1$ penalizes false negatives,}\\[1pt]
+    {\footnotesize shifting the decision boundary before calibration.}
+
+    \vspace{4pt}
+    {\footnotesize\textbf{Goal:} Satisfy risk bound while suppressing FNR.}
+    \end{minipage}
+};
+
+% --- Case 4 ---
+\node[box={c4Top}{c4Bg}, right=1.2cm of c3] (c4) {
+    \begin{minipage}{4.6cm}\centering
+    \textbf{\large Case 4: FNR \& Coverage Control}
+
+    \vspace{4pt}
+    {\footnotesize Same FNR-based threshold $\tau_2^*$ as Case~2}
+
+    \vspace{2pt}
+    {\footnotesize\textbf{+ Cost-Sensitive Learning during training}}
+
+    \vspace{4pt}
+    $\mathcal{L}_{\mathrm{cs}} = -\frac{1}{n}\sum\bigl[w_1 y_i\log\hat{p}_i + w_0(1-y_i)\log(1-\hat{p}_i)\bigr]$
+
+    \vspace{4pt}
+    {\footnotesize CSL gives higher confidence on positives,}\\[1pt]
+    {\footnotesize allowing a less aggressive $\tau_2^*$.}
+
+    \vspace{4pt}
+    {\footnotesize\textbf{Goal:} Recover coverage lost in Case~2.}
+    \end{minipage}
+};
+
+% --- Row 2 arrows ---
+\draw[bigarrow={c3Top}] (c3.east) -- node[above, font=\footnotesize\bfseries, text=c3Top] {$\tau_1^*$ vs.\ $\tau_2^*$} (c4.west);
+
+% --- Vertical "adds CSL" arrows ---
+\draw[cslarrow={c3Top}]
+    (c1.south) -- node[right, font=\footnotesize\bfseries, text=c3Top, pos=0.45] {+ Cost-Sensitive\\Learning} (c3.north);
+\draw[cslarrow={c4Top}]
+    (c2.south) -- node[right, font=\footnotesize\bfseries, text=c4Top, pos=0.45] {+ Cost-Sensitive\\Learning} (c4.north);
+
+% ============================================================
+% Shared backbone label (top)
+% ============================================================
+\node[
+    draw=black!40, dashed, rounded corners=8pt,
+    inner sep=6pt, font=\footnotesize\bfseries,
+    fit=(c1.north west)(c2.north east),
+    yshift=0.5cm
+] (backbone) {};
+\node[above=0pt of backbone, font=\footnotesize\bfseries, fill=white, inner sep=3pt]
+    {Shared SelectiveNet Backbone\ ($f$: prediction head,\ $g$: selection head,\ $h$: auxiliary head)};
+
+% ============================================================
+% Legend at bottom
+% ============================================================
+\node[below=0.6cm of c3.south, font=\footnotesize, align=center, text=black!60] {
+    All four cases share: coverage target $c=0.80$, penalty weight $\beta=32$, $\gamma=0.5$,\\
+    swap calibration with stratified 5-fold CV, and 15-epoch SelectiveNet training.
+};
+
+\end{tikzpicture}
+\end{document}
