@@ -291,7 +291,7 @@ Selective inference typically pursues two objectives: controlling a risk measure
 While Case 2 effectively controls the FNR, it may do so at the cost of unacceptably low coverage. This occurs because the model treats false negatives and false positives equally during training, failing to recognize the clinical severity of missing a positive case. Consequently, the resulting threshold tends to be overly aggressive, leading to high abstention rates and placing a substantial review burden on human experts. A natural remedy, analogous to the approach in Case 3, is to incorporate cost‑sensitive learning during training. By penalizing false negatives more heavily, the model learns to reduce such errors, which in turn yields a more conservative threshold and thereby improves coverage while maintaining strong FNR control.
 
 \section{Experiments and Results}\label{sec:experiments}
-\textcolor{red}{All questions\\
+\textcolor{red}{All questions：
 1. Lines 296–300 in Section 4.1 contain substantial duplicated content.
 The two passages are nearly verbatim repetitions of the following settings:
 - AdamW optimizer (learning rate of $1\times10^{-5}$, weight decay of 0.05)
@@ -300,19 +300,14 @@ The two passages are nearly verbatim repetitions of the following settings:
 - Dropout rate of 0.2 and label smoothing of 0.1
 - Normalization using ImageNet statistics
 - Data augmentation configurations (224×224 input size, flipping, rotation, and color jitter)\\
-
 2. Section 4.1 lacks information on dataset class distribution.
 The numbers of positive and negative samples are not specified (1519 positive versus 5614 negative, with an approximate ratio of 1:3.7).\\
-
 3. Section 4.1 lacks a general overview of the validation strategies.
 Different experimental settings adopt distinct validation protocols: the Baseline and CSL models use standard 5-fold cross-validation; NP and CSL+NP adopt ten repeated Monte Carlo Cross-Validation (MCCV); SelectiveNet employs 5-fold cross-validation combined with swap calibration. We suggest providing a unified description of all validation strategies in Section 4.1, rather than introducing them separately at the beginning of each subsection. In addition, swap calibration is applied to all experimental cases of SelectiveNet.\\
-
 4. The validation description at Line 306 in Section 4.2 is redundant with Section 4.1.
 The sentence *“We performed a stratified 5-fold cross-validation at the image level”* in Line 306 has already been stated in Line 298 of Section 4.1.\\
-
 5. Section 4.3 contains overly lengthy descriptions of competing models.
 Detailed algorithm illustrations for CLAM-SB, DS-MIL, DTFD-MIL, and TransMIL each occupy 4–6 lines. Since these are well-established published methods, their introductions can be appropriately condensed into brief summaries.\\
-
 6. Section 4.3, Line 439: *“Phase II introduces Neyman–Pearson...”*
 The subsection title already corresponds to Phase II, and the MCCV procedure has been elaborated in Lines 430–437. The statement *“Phase II introduces...”* constitutes a redundant third introduction of the same content.}
 In this section, we systematically evaluate the proposed framework through a cascade of eight complementary experiments. We first describe the experimental setup in Subsection \ref{S3-1} and then report the performance of our baseline model in Subsection \ref{S3-2}, followed by comparisons with competing state-of-the-art MIL architectures in Subsection \ref{S3-3}. To address the inherent limitations of architectural design alone, we progressively investigate three phases: risk-aware training via cost-sensitive learning in Subsection \ref{sec:phase1_results}, threshold selection via NP calibration in Subsection \ref{sec:phase2_results}, and the synergistic effect of cost-sensitive learning boosting NP calibration in Subsection \ref{S3-4}. We further extend to selective classification with conformal risk or FNR control in Subsection \ref{sec:phase3_results}, and conclude with external validation in Subsection \ref{S3-6}. Together, these subsections form a coherent progression from standard benchmarking to risk-controllable and reliable decision-making.

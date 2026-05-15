@@ -1,0 +1,170 @@
+\documentclass[tikz,border=4pt]{standalone}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={rounded corners=12pt, very thick, minimum width=3.9cm, minimum height=6.1cm, inner sep=0pt, draw},
+    title/.style={font=\bfseries\large, text=white, align=center},
+    content/.style={font=\small, align=left, text=black}
+]
+
+% Colors
+\definecolor{blueTop}{RGB}{48,115,170}
+\definecolor{blueLight}{RGB}{232,240,248}
+\definecolor{redTop}{RGB}{183,61,54}
+\definecolor{redLight}{RGB}{249,231,228}
+\definecolor{greenTop}{RGB}{77,139,72}
+\definecolor{greenLight}{RGB}{232,244,229}
+\definecolor{purpleTop}{RGB}{123,66,142}
+\definecolor{purpleLight}{RGB}{244,232,247}
+
+% A robust arrow macro: no shapes.arrows needed
+\newcommand{\blockarrow}[3]{%
+  \begin{scope}[shift={(#1,#2)}]
+    \filldraw[fill=#3!88, draw=#3, very thick]
+      (-0.34,-0.23) -- (0.18,-0.23) -- (0.18,-0.42)
+      -- (0.63,0) -- (0.18,0.42) -- (0.18,0.23)
+      -- (-0.34,0.23) -- cycle;
+  \end{scope}
+}
+
+% ---------------- Case 1 ----------------
+\node[box, draw=blueTop, fill=blueLight] (c1) at (0,0) {};
+\fill[blueTop, rounded corners=12pt]
+    ([xshift=-1.95cm,yshift=3.05cm]c1.center) rectangle
+    ([xshift=1.95cm,yshift=1.75cm]c1.center);
+\node[title] at ([yshift=2.45cm]c1.center) {Case 1: Risk Control\\(Calibration)};
+
+\node[content] at ([yshift=0.35cm]c1.center) {
+\begin{minipage}{3.35cm}
+\centering
+$\widehat{R}(\tau)=\dfrac{\sum(\hat{y}_i\neq y_i)}{|S_\tau|}$
+
+\vspace{0.2cm}
+$\tau_1^*=\inf\{\tau\in[0,1]\mid \widehat{R}(\tau)\leq \alpha\}$
+
+\vspace{0.18cm}
+$(f,g)_{\tau_1^*}(X)=
+\begin{cases}
+(f(X)>0.5),\\
+g(X)\geq \tau_1^*,\\
+\text{abstain},\\
+\text{otherwise.}
+\end{cases}$
+\end{minipage}
+};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=-2.35cm]c1.center) {
+\begin{minipage}{3.25cm}
+\textbf{Objective:} Control empirical risk.\\
+\textbf{Limitation:} Fails FNR constraints.
+\end{minipage}
+};
+
+\blockarrow{2.15}{0}{blueTop}
+
+% ---------------- Case 2 ----------------
+\node[box, draw=redTop, fill=redLight] (c2) at (4.45,0) {};
+\fill[redTop, rounded corners=12pt]
+    ([xshift=-1.95cm,yshift=3.05cm]c2.center) rectangle
+    ([xshift=1.95cm,yshift=1.75cm]c2.center);
+\node[title] at ([yshift=2.45cm]c2.center) {Case 2: FNR Control\\(Calibration)};
+
+\node[content] at ([yshift=0.35cm]c2.center) {
+\begin{minipage}{3.35cm}
+\centering
+$\mathrm{FNR}(\tau)=\dfrac{\sum(\hat{y}_i=0\wedge y_i=1)}{|\{y_i=1\}|}$
+
+\vspace{0.2cm}
+$\tau_2^*=\inf\{\tau\in[0,1]\mid \mathrm{FNR}(\tau)\leq \alpha\}$
+
+\vspace{0.18cm}
+$(f,g)_{\tau_2^*}(X)=
+\begin{cases}
+(f(X)>0.5),\\
+g(X)\geq \tau_2^*,\\
+\text{abstain},\\
+\text{otherwise.}
+\end{cases}$
+\end{minipage}
+};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=-2.35cm]c2.center) {
+\begin{minipage}{3.25cm}
+\textbf{Objective:} Control empirical FNR.\\
+\textbf{Limitation:} Low coverage, high abstention.
+\end{minipage}
+};
+
+\blockarrow{6.60}{0}{redTop}
+
+% ---------------- Case 3 ----------------
+\node[box, draw=greenTop, fill=greenLight] (c3) at (8.90,0) {};
+\fill[greenTop, rounded corners=12pt]
+    ([xshift=-1.95cm,yshift=3.05cm]c3.center) rectangle
+    ([xshift=1.95cm,yshift=1.55cm]c3.center);
+\node[title] at ([yshift=2.32cm]c3.center) {Case 3: Risk \&\\FNR Control\\(Cost-sensitive)};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=1.00cm]c3.center) {
+\begin{minipage}{3.25cm}
+\textbf{Approach:} Incorporate Cost-sensitive Learning during training to penalize FNs.
+\end{minipage}
+};
+
+\node[content] at ([xshift=0.10cm,yshift=-0.10cm]c3.center) {
+\begin{tikzpicture}[scale=0.85, font=\small]
+\node (obj) at (0,0) {Objective};
+\node (risk) at (-1.05,0.85) {Risk};
+\node (fdr) at (1.0,0.85) {FDR};
+\node (cov) at (1.1,-0.45) {Coverage};
+\draw[greenTop, very thick,-{Latex[length=2mm]}] (obj) -- (risk);
+\draw[greenTop, very thick,-{Latex[length=2mm]}] (obj) -- (fdr);
+\draw[greenTop, very thick,-{Latex[length=2mm]}] (obj) -- (cov);
+\draw[greenTop, very thick,-{Latex[length=2mm]}] (risk) -- (cov);
+\draw[greenTop, very thick,-{Latex[length=2mm]}] (cov) -- (fdr);
+\end{tikzpicture}
+};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=-2.15cm]c3.center) {
+\begin{minipage}{3.25cm}
+\textbf{Objective:} Balance Risk Control, FDR Control, \& Coverage. Addresses Case 1 FNR failure.
+\end{minipage}
+};
+
+\blockarrow{11.05}{0}{purpleTop}
+
+% ---------------- Case 4 ----------------
+\node[box, draw=purpleTop, fill=purpleLight] (c4) at (13.35,0) {};
+\fill[purpleTop, rounded corners=12pt]
+    ([xshift=-1.95cm,yshift=3.05cm]c4.center) rectangle
+    ([xshift=1.95cm,yshift=1.55cm]c4.center);
+\node[title] at ([yshift=2.32cm]c4.center) {Case 4: FNR \&\\Coverage Control\\(Cost-sensitive)};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=1.00cm]c4.center) {
+\begin{minipage}{3.25cm}
+\textbf{Approach:} Heavily penalize FNs in Cost-sensitive Learning.
+\end{minipage}
+};
+
+\node[content] at ([xshift=0.05cm,yshift=-0.05cm]c4.center) {
+\begin{tikzpicture}[scale=0.85, font=\small]
+\node (heavy) at (-0.9,0.25) {Heavily};
+\node (cov) at (1.05,0.85) {Coverage};
+\node (fnr) at (1.15,-0.45) {FNR Control};
+\draw[purpleTop, very thick,-{Latex[length=2mm]}] (heavy) -- (cov);
+\draw[purpleTop, very thick,-{Latex[length=2mm]}] (heavy) -- (fnr);
+\end{tikzpicture}
+};
+
+\node[content, anchor=west] at ([xshift=-1.65cm,yshift=-2.15cm]c4.center) {
+\begin{minipage}{3.25cm}
+\textbf{Objective:} Improve Coverage while maintaining FNR Control. Addresses Case 2 low coverage.
+\end{minipage}
+};
+
+\end{tikzpicture}
+\end{document}
