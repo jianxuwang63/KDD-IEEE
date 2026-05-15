@@ -8,16 +8,16 @@
     font=\small,
     cbox/.style n args={2}{
         rectangle, rounded corners=6pt, draw=#1!70!black, fill=#2,
-        minimum width=8.2cm, minimum height=6.5cm,
+        minimum width=8.4cm, minimum height=4.6cm,
         inner sep=10pt, line width=1.2pt
     },
     tag/.style n args={1}{
         rectangle, rounded corners=4pt, fill=#1, text=white,
         font=\bfseries, align=center, inner sep=5pt,
-        text width=7.4cm, anchor=north
+        text width=7.6cm, anchor=north
     },
     harrow/.style={
-        -{Latex[length=3mm,width=3mm]}, line width=1.2pt, #1
+        -{Latex[length=2.5mm,width=2.5mm]}, line width=1pt, #1
     },
     varrow/.style={
         -{Latex[length=2.5mm,width=2.5mm]}, line width=1pt, dashed, #1
@@ -38,130 +38,116 @@
 % ============================================================
 
 \node[cbox={c1}{c1bg}] (c1) {
-    \begin{minipage}[c][5.5cm][c]{7.2cm}\centering
-    \textbf{Threshold Selection}
-
-    \vspace{4pt}
+    \begin{minipage}[c][3.6cm][c]{7.4cm}\centering
     $\displaystyle\widehat{R}(\tau)=\frac{\sum_{i\in S_\tau}\mathbb{I}(\hat{y}_i\neq y_i)}{|S_\tau|}$
-    \qquad
+    \hspace{4pt}
     $\tau_1^*=\inf\{\tau\in[0,1]\mid\widehat{R}(\tau)\leq\alpha\}$
 
-    \vspace{8pt}
-    \textbf{Decision Rule}
-
-    \vspace{2pt}
+    \vspace{6pt}
     $(f,g)_{\tau_1^*}(X)=
     \begin{cases}
     \mathbb{I}(f(X)>0.5), & g(X)\geq\tau_1^*\\[2pt]
     \text{abstain},       & \text{otherwise}
     \end{cases}$
 
-    \vspace{10pt}
+    \vspace{8pt}
     {\footnotesize\color{c1!80!black}
-    \textbf{Training:} Standard Cross-Entropy\\
-    \textbf{Calibration:} $\tau$ chosen so that risk $\leq\alpha$\\
-    \textbf{Limitation:} FNR can remain high (up to $20\%$) at practical $\alpha$}
+    \textbf{Training:} Standard Cross-Entropy \quad
+    \textbf{Calibration:} Risk $\leq\alpha$}\\[1pt]
+    {\footnotesize\color{c1!70!black}
+    FNR can remain high ($\sim$20\%) at practical $\alpha$}
     \end{minipage}
 };
 \node[tag={c1}] at (c1.north) {Case 1: Risk Control};
 
-\node[cbox={c2}{c2bg}, right=2.0cm of c1] (c2) {
-    \begin{minipage}[c][5.5cm][c]{7.2cm}\centering
-    \textbf{Threshold Selection}
-
-    \vspace{4pt}
+\node[cbox={c2}{c2bg}, right=1.0cm of c1] (c2) {
+    \begin{minipage}[c][3.6cm][c]{7.4cm}\centering
     $\displaystyle\widehat{\mathrm{FNR}}(\tau)=\frac{\sum_{S_\tau}\mathbb{I}(\hat{y}_i=0\wedge y_i=1)}{|\{i\in\mathcal{D}_{\mathrm{cal}}\mid y_i=1\}|}$
-    \qquad
+    \hspace{4pt}
     $\tau_2^*=\inf\{\tau\in[0,1]\mid\widehat{\mathrm{FNR}}(\tau)\leq\alpha\}$
 
-    \vspace{8pt}
-    \textbf{Decision Rule}
-
-    \vspace{2pt}
+    \vspace{6pt}
     $(f,g)_{\tau_2^*}(X)=
     \begin{cases}
     \mathbb{I}(f(X)>0.5), & g(X)\geq\tau_2^*\\[2pt]
     \text{abstain},       & \text{otherwise}
     \end{cases}$
 
-    \vspace{10pt}
+    \vspace{8pt}
     {\footnotesize\color{c2!80!black}
-    \textbf{Training:} Standard Cross-Entropy\\
-    \textbf{Calibration:} $\tau$ chosen so that FNR $\leq\alpha$\\
-    \textbf{Limitation:} Low coverage; $\sim$40\%--80\% at strict $\alpha$}
+    \textbf{Training:} Standard Cross-Entropy \quad
+    \textbf{Calibration:} FNR $\leq\alpha$}\\[1pt]
+    {\footnotesize\color{c2!70!black}
+    Low coverage ($\sim$40\%--80\%) at strict $\alpha$}
     \end{minipage}
 };
 \node[tag={c2}] at (c2.north) {Case 2: FNR Control};
 
 \draw[harrow={c1}]
     (c1.east) -- (c2.west)
-    node[midway, above=6pt, font=\footnotesize\bfseries, text=c1!85!black]
-    {Risk-based $\tau_1^*$ \hspace{10pt}vs.\hspace{10pt} FNR-based $\tau_2^*$};
+    node[midway, above=-2pt, font=\footnotesize\bfseries, text=c1!85!black, align=center]
+    {\shortstack{$\tau_1^*$\\vs.\\$\tau_2^*$}};
 
 % ============================================================
 % Row 2
 % ============================================================
 
-\node[cbox={c3}{c3bg}, below=2.0cm of c1] (c3) {
-    \begin{minipage}[c][5.5cm][c]{7.2cm}\centering
-    \textbf{Same risk-based threshold $\tau_1^*$ as Case~1}
-
-    \vspace{2pt}
-    \textbf{$+$ Cost-Sensitive Learning}
+\node[cbox={c3}{c3bg}, below=1.2cm of c1] (c3) {
+    \begin{minipage}[c][3.6cm][c]{7.4cm}\centering
+    {\small\textbf{Same $\tau_1^*$ as Case~1 $+$ Cost-Sensitive Learning}}
 
     \vspace{6pt}
     $\displaystyle\mathcal{L}_{\mathrm{cs}}=-\frac{1}{n}\sum_{i=1}^{n}
     \bigl[w_1\,y_i\log\hat{p}_i+w_0\,(1-y_i)\log(1-\hat{p}_i)\bigr]$
 
     \vspace{4pt}
-    {\footnotesize $w_1>1$ amplifies the penalty on false negatives,}\\[1pt]
-    {\footnotesize shifting the decision boundary before calibration.}
+    {\footnotesize $w_1>1$ penalizes false negatives, shifting the decision boundary before calibration.}
 
-    \vspace{12pt}
+    \vspace{8pt}
     {\footnotesize\color{c3!80!black}
-    \textbf{Training:} CSL with class weights $[1,w_1]$\\
-    \textbf{Calibration:} Same risk-based $\tau_1^*$ as Case~1\\
-    \textbf{Effect:} FNR drops from $12.9\%$ to $7.2\%$ ($w_1=5$) at $\alpha=5\%$}
+    \textbf{Training:} CSL with class weights $[1,w_1]$ \quad
+    \textbf{Calibration:} Same $\tau_1^*$}\\[1pt]
+    {\footnotesize\color{c3!70!black}
+    FNR: $12.9\%\!\to\!7.2\%$ ($w_1\!=\!5$, $\alpha\!=\!5\%$) \quad
+    Coverage: $92.5\%\!\to\!87.1\%$}
     \end{minipage}
 };
-\node[tag={c3}] at (c3.north) {Case 3: Risk \& FNR Control (Cost-Sensitive Learning)};
+\node[tag={c3}] at (c3.north) {Case 3: Risk + Cost-Sensitive Learning};
 
-\node[cbox={c4}{c4bg}, right=2.0cm of c3] (c4) {
-    \begin{minipage}[c][5.5cm][c]{7.2cm}\centering
-    \textbf{Same FNR-based threshold $\tau_2^*$ as Case~2}
-
-    \vspace{2pt}
-    \textbf{$+$ Cost-Sensitive Learning}
+\node[cbox={c4}{c4bg}, right=1.0cm of c3] (c4) {
+    \begin{minipage}[c][3.6cm][c]{7.4cm}\centering
+    {\small\textbf{Same $\tau_2^*$ as Case~2 $+$ Cost-Sensitive Learning}}
 
     \vspace{6pt}
     $\displaystyle\mathcal{L}_{\mathrm{cs}}=-\frac{1}{n}\sum_{i=1}^{n}
     \bigl[w_1\,y_i\log\hat{p}_i+w_0\,(1-y_i)\log(1-\hat{p}_i)\bigr]$
 
     \vspace{4pt}
-    {\footnotesize CSL raises confidence scores on positives,}\\[1pt]
-    {\footnotesize allowing a less aggressive $\tau_2^*$ at same FNR.}
+    {\footnotesize CSL raises confidence on positives, enabling a less aggressive $\tau_2^*$.}
 
-    \vspace{12pt}
+    \vspace{8pt}
     {\footnotesize\color{c4!80!black}
-    \textbf{Training:} CSL with class weights $[1,w_1]$\\
-    \textbf{Calibration:} Same FNR-based $\tau_2^*$ as Case~2\\
-    \textbf{Effect:} Coverage recovers from $79\%$ to $91\%$ ($w_1=10$) at $\alpha=5\%$}
+    \textbf{Training:} CSL with class weights $[1,w_1]$ \quad
+    \textbf{Calibration:} Same $\tau_2^*$}\\[1pt]
+    {\footnotesize\color{c4!70!black}
+    Coverage: $79\%\!\to\!91\%$ ($w_1\!=\!10$, $\alpha\!=\!5\%$) \quad
+    FNR: $5.5\%\!\to\!5.1\%$}
     \end{minipage}
 };
-\node[tag={c4}] at (c4.north) {Case 4: FNR \& Coverage Control (Cost-Sensitive Learning)};
+\node[tag={c4}] at (c4.north) {Case 4: FNR + Cost-Sensitive Learning};
 
 \draw[harrow={c3}]
     (c3.east) -- (c4.west)
-    node[midway, above=6pt, font=\footnotesize\bfseries, text=c3!85!black]
-    {Risk-based $\tau_1^*$ \hspace{10pt}vs.\hspace{10pt} FNR-based $\tau_2^*$};
+    node[midway, above=-2pt, font=\footnotesize\bfseries, text=c3!85!black, align=center]
+    {\shortstack{$\tau_1^*$\\vs.\\$\tau_2^*$}};
 
-% Vertical arrows
+% Vertical arrows (horizontal labels outside)
 \draw[varrow={c3}]
-    (c1.south) -- node[right=4pt, font=\footnotesize\bfseries, text=c3!80!black, pos=0.5]
-    {\shortstack{+ Cost-Sensitive\\\ Learning}} (c3.north);
+    (c1.south) -- node[midway, left=5pt, font=\footnotesize\bfseries, text=c3!80!black]
+    {$+$ Cost-Sensitive Learning} (c3.north);
 \draw[varrow={c4}]
-    (c2.south) -- node[right=4pt, font=\footnotesize\bfseries, text=c4!80!black, pos=0.5]
-    {\shortstack{+ Cost-Sensitive\\\ Learning}} (c4.north);
+    (c2.south) -- node[midway, right=5pt, font=\footnotesize\bfseries, text=c4!80!black]
+    {$+$ Cost-Sensitive Learning} (c4.north);
 
 \end{tikzpicture}
 \end{document}
