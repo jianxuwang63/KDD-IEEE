@@ -39,7 +39,8 @@ Accurate detection of the micropapillary (MIP) subtype in lung adenocarcinoma is
 Lung Adenocarcinoma, Vision Transformer, Cost-sensitive Learning, Neyman--Pearson Paradigm, Selective Classification
 \end{IEEEkeywords}
 
-
+\textcolor{red}{Overall comments on the first paragraph:I suggest adding several literature citations to the first and second sentences of the first paragraph to strengthen the academic basis and persuasiveness of the statements.\\
+The second section elaborates the challenges of MIP. Accordingly, I recommend supplementing relevant content in the first paragraph to clarify that MIP accounts for only a small proportion among cancer patients, making this task an inherently imbalanced classification problem.I believe the main issues in Chapter 1 lie in the first two paragraphs. The subsequent content contains only one minor problem, which has already been marked in red in the original text. I have also placed the revised version of the first two paragraphs in the draft file.}
 \section{Introduction}
 
 Lung adenocarcinoma (LUAD) is the most common histological subtype of lung cancer, the leading cause of cancer mortality worldwide. Among LUAD variants, the micropapillary (MIP) growth pattern is particularly clinically consequential due to its aggressive nature. Studies have shown that even a minor MIP component (e.g., $>5\%$) is strongly associated with lymph node metastasis and poor postoperative outcomes \cite{caso2020underlying, dai2017tumor}. As a result, accurately detecting MIP is not only a diagnostic necessity but also a decision-critical factor in surgical planning—such as opting for lobectomy over sublobar resection—and in determining subsequent treatment intensity \cite{dai2017tumor}. In this paper, we focus on the challenging task of identifying high-risk MIP cases from pathological local microscopy images, where diagnostic omission could lead to significant undertreatment and adversely affect patient prognosis.
@@ -58,7 +59,7 @@ To close the gap between model performance and clinical reliability, we introduc
 \begin{itemize}
 \item \textbf{Training Phase I:} We adopt cost-sensitive learning to reshape the decision boundary, explicitly increasing the penalty for missed diagnoses and improving the model’s intrinsic sensitivity \cite{el2010foundations}.
 \item \textbf{Calibration Phase II:} We apply Neyman–Pearson (NP) calibration \cite{rigollet2011neyman,tong2018neyman} to move beyond fixed thresholds. This provides a statistical guarantee that the false-negative rate remains below a user-specified level with high probability.
-\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk and/or FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective,dai2017tumor}.
+\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk \textcolor{red}{and/or} \textcolor{red}{Is the English expression here not very accurate?}FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective,dai2017tumor}.
 \end{itemize}
 
 Based on these three phases, our main contributions are threefold:
@@ -73,7 +74,11 @@ Throughout the paper, we use lowercase letters for scalars, bold lowercase for v
 % Due to limited space, the related work is included in Appendix \ref{S6-3}.
 
 \section{Related Work}\label{S6-3}
+\textcolor{red}{Overview of issues in Chapter 2
 
+I believe Chapter 2 has substantial logical deficiencies. After reorganizing the overall research logic, I plan to fully rewrite this chapter. The revised version will separately review the state-of-the-art advances in three research directions: MIP pathological subtyping, cost-sensitive learning and Neyman–Pearson classification, and selective inference. For each field, I will elaborate on its inherent limitations when applied to practical clinical diagnosis scenarios, which can also form a logical echo with Chapter 1.\\
+For instance, existing studies in the MIP community predominantly focus on overall accuracy while neglecting the false negative rate (FNR). Each of the three research domains still suffers from unresolved inherent drawbacks. By integrating these three fields organically, our work constructs a robust, stable, and efficient unified framework to address the above limitations.\\
+I have placed the rewritten content of Chapter 2 in the draft document.}
 Our review of related work is structured along three complementary dimensions that collectively address the core challenge of building a clinically trustworthy deep learning model for high-risk pathology detection.
 
 \subsection{DL and MIL in Computational Pathology}
@@ -141,9 +146,9 @@ Finally, a linear classifier \( h_{\mathrm{c}}: \mathbb{R}^{d} \to \mathbb{R} \)
 
 \subsection{Phase I: Risk-Aware Training via Cost-Sensitive Learning}\label{sec:phase1_method}
 
-While the baseline model follows a standard training objective that minimizes average classification error, this approach overlooks the clinical asymmetry of risks: false negatives (FN) are considerably more costly than false positives (FP) in high‑stakes diagnostic settings. To incorporate this asymmetry directly into representation learning, we adopt a cost‑sensitive learning (CSL) strategy.
-
-We adopt a class‑weighted cross‑entropy objective to enforce higher penalties on false negatives \cite{he2009learning}.  
+While the baseline model follows a standard training objective that minimizes average classification error, this approach overlooks the clinical asymmetry of risks: false negatives (FN) are considerably more costly than false positives (FP) in high‑stakes diagnostic settings. To incorporate this asymmetry directly into representation learning, \textcolor{red}{we adopt} a cost‑sensitive learning (CSL) strategy.
+\textcolor{red}{There are two repetitive expressions of the same phrase in this context.}\\
+\textcolor{red}{We adopt} a class‑weighted cross‑entropy objective to enforce higher penalties on false negatives \cite{he2009learning}.  
 Let \(\mathcal{D} = \{(X_i, y_i)\}_{i=1}^{n}\) denote the training set, where \(y_i \in \{0,1\}\) indicates the label (1 for MIP‑present, 0 for MIP‑absent) and \(\hat{p}_i\) is the predicted positive probability. The cost‑sensitive loss is defined as  
 \begin{equation*}
     \mathcal{L}_{\mathrm{cs}} = - \frac{1}{n} \sum_{i=1}^{n} \Bigl[ w_{1} \, y_i \log(\hat{p}_i) + w_{0} \, (1-y_i) \log(1-\hat{p}_i) \Bigr].
@@ -290,13 +295,15 @@ We implement our framework in PyTorch and run all experiments on an NVIDIA RTX 5
 
 We initialize the ViT-based MIL baseline with Phikon weights \cite{filiot2023scaling} and employ gated attention pooling \cite{ilse2018attention}. Optimization uses AdamW \cite{loshchilov2017decoupled} with learning rate $1 \times 10^{-5}$ and weight decay $0.05$ for 15 epochs, following a cosine schedule with linear warmup. Training employs mixed precision \cite{micikevicius2017mixed} and gradient accumulation (effective batch size 32 over 4 steps). We use cross-entropy loss with label smoothing $0.1$ \cite{szegedy2016rethinking} and dropout $0.2$ in the classification head.
 
-We adopt an image-level stratified Monte Carlo 5-fold cross-validation, with an 80\%/20\% training/test split per fold. In addition to standard metrics (AUC and accuracy), we report ROC/PR curves and conduct calibration analysis using reliability diagrams and Brier scores \cite{guo2017calibration}. Unless stated otherwise, results are reported using the final training checkpoint with a default decision threshold $\tau = 0.5$. To ensure reproducibility, we fix random seeds and enable deterministic cuDNN. 
+We adopt an image-level stratified 5-fold cross-validation. In addition to standard metrics (AUC and accuracy), we report ROC/PR curves and conduct calibration analysis using reliability diagrams and Brier scores \cite{guo2017calibration}. Unless stated otherwise, results are reported using the final training checkpoint with a default decision threshold $\tau = 0.5$.
+
+To ensure stable and reproducible evaluation, we fix random seeds and enable deterministic cuDNN. The dataset is split into 80\% training and 20\% test using stratified sampling. All models are optimized with the same protocol: AdamW \cite{loshchilov2017decoupled} ($10^{-5}$, weight decay $0.05$) for 15 epochs, cosine schedule with 10\% linear warmup \cite{loshchilov2016sgdr}, mixed precision, and gradient accumulation (batch size 8, accumulation steps 4). Dropout $0.2$ and label smoothing $0.1$ are applied for regularization \cite{szegedy2016rethinking}. Each tile is normalized with ImageNet statistics \cite{imagenet} and augmented via resizing to $224 \times 224$, random flips, rotation $\pm 15^\circ$, and color jitter. 
 
 \subsection{Baseline Model Performance}\label{S3-2}
 
 In clinical practice, pathologists often inspect specific high-magnification regions of interest (ROIs) to identify subtle histological growth patterns. These ROIs, however, typically exceed the input size constraints of standard neural networks. Consequently, we adopt the multiple instance learning (MIL) paradigm, which aggregates tile-level features into a whole-slide prediction without requiring pixel-level annotations.
 
-We performed a stratified Monte Carlo evaluation at the image level using 5‑fold cross‑validation. In each fold, the ViT‑MIL model was re‑initialized from the same Phikon checkpoint and trained for 15 epochs under identical optimization settings. Evaluation was conducted on the held‑out fold using the last‑epoch model with a fixed threshold $\tau = 0.5$. 
+We performed a stratified 5-fold cross-validation evaluation at the image level using 5‑fold cross‑validation. In each fold, the ViT‑MIL model was re‑initialized from the same Phikon checkpoint and trained for 15 epochs under identical optimization settings. Evaluation was conducted on the held‑out fold using the last‑epoch model with a fixed threshold $\tau = 0.5$. 
 
 \begin{figure}[htbp]
     \centering
@@ -466,7 +473,7 @@ Phase II introduces Neyman–Pearson (NP) thresholding to obtain formal, statist
 These results illustrate how Neyman–Pearson thresholding enables precise, statistically grounded control of the safety–efficiency trade‑off. Tighter miss‑risk targets shift the decision threshold downward, thereby lowering the false negative rate (FNR) at the expense of overall accuracy. Compared with cost-sensitive learning, NP can exactly control the false negative rate (FNR) at a specified level. However, it requires holding out a positive calibration set for threshold tuning, which not only reduces the number of samples in the training set but also exacerbates the class imbalance between positive and negative samples. This fully validates the no-free-lunch theorem.
 
 \subsection{Phase II*: Cost-Sensitive Learning Boosting Neyman–Pearson Calibration}\label{S3-4}
-
+\textcolor{red}{I think the title here should be revised; otherwise, it is not sufficiently standardized. It is mainly that the notation II* is not sufficiently standard.}
 Phase II confirms that Neyman–Pearson (NP) calibration can theoretically enforce a strict upper bound on the false‑negative rate (FNR). However, applying an aggressive safety target (e.g., FNR $\leq 1\%$) to the baseline model imposes a substantial practical cost: the decision threshold must be lowered drastically, leading to a false‑positive rate (FPR) of 59.37\% and a marked drop in overall accuracy.
 
 In this phase, we examine whether cost‑sensitive learning (CSL) can serve as a more effective training precursor to Neyman–Pearson (NP) calibration. We hypothesize that because CSL explicitly penalizes false negatives during training, it shifts the predicted probability distribution of positive samples toward higher values—as observed in Phase I. Consequently, under NP calibration, a safe threshold satisfying the same target FNR should be attainable with less severe degradation in specificity compared to the baseline.
@@ -580,8 +587,8 @@ Unlike Case~1—where the FNR rises substantially (up to $20\%$) under general r
 \subsubsection{\textbf{Case 3: Risk Control with Cost-sensitive Learning}}
 \label{sec:case3_results}
 
-To systematically evaluate the impact of cost-sensitive learning on risk control, we extend the baseline SelectiveNet by introducing weights $w_1 \in \{5, 10\}$ on the positive class. This explicitly penalizes false negatives during training, thereby reducing the high FNR observed in Case~1.
-
+To systematically evaluate the impact of cost-sensitive learning on risk control, we extend the baseline SelectiveNet by introducing weights $w_1 \in \{5, 10\}$ on the positive class. This explicitly penalizes \textcolor{red}{false negatives} during training, thereby reducing the high FNR observed in Case~1.
+\textcolor{red}{This section should focus on risk rather than false negatives; the current expression is inaccurate.}
 \begin{table}[htbp]
     \centering
     \caption{The selective classification performance of Case 3 ($w_{1}=5$ and $w_{1}=10$).}
@@ -686,7 +693,6 @@ We externally validated our models on the TRACERx 100 clinical cohort (\url{http
 \end{table}
 
 On the external dataset, the baseline achieved an accuracy of 93.64\% but incurred a high false negative rate (FNR) of 33.83\%. To address this, we applied cost-sensitive methods during training and NP methods during validation to control the FNR. With a target FNR of 5\%, our approach yielded an actual FNR of 6.53\% and an accuracy of 69.05\%. Compared to the baseline, this represents a 27.3 percentage point reduction in FNR at the cost of a 24.59 percentage point decrease in accuracy. 
-
 \begin{table}[htbp]
     \centering
     \caption{The selective classification performance of external validation.}
@@ -713,7 +719,7 @@ On the external dataset, the baseline achieved an accuracy of 93.64\% but incurr
     }
 \end{table}
 
-We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Case~3 (risk control) achieves well-calibrated risk on the external data: at the $5\%$ target, the test risk is $4.87\%$ with $61.19\%$ coverage. Case~4, with explicit FNR control, reduces false negatives more aggressively. At the $5\%$ target FNR, the external FNR reaches $3.20\%$—well below the bound—with $56.70\%$ coverage and $95.72\%$ accuracy, outperforming its Case~3 counterpart in sensitivity. These trends broadly mirror those on the local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}), though coverage on the external data is moderately lower, reflecting the increased domain shift. Overall, the framework maintains consistent selective classification behavior across datasets.
+We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Under both risk control and FNR control, the framework achieved well calibrated performance on the external data, closely mirroring the behavior observed on our local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}). Overall, these results demonstrate that the framework maintains satisfactory predictive accuracy and selective classification performance on external data, consistent with its performance on local data.
 
 \section{Conclusion}
 
