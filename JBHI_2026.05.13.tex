@@ -21,11 +21,12 @@
 {Author \MakeLowercase{\textit{et al.}}: Title}
 \begin{document}
 \title{A Risk-Controlled Framework with Guaranteed Confidence for Lung Adenocarcinoma Classification}
-\author{Jianxu Wang, Huijun Zhou, and Xuewei Cheng
+\author{Jianxu Wang$^{\dagger}$, Huijun Zhou$^{\dagger}$ and Xuewei Cheng
+\thanks{$^{\dagger}$ These authors contributed equally to this work.}
 \thanks{This research is supported by the Natural Science Foundation of Hunan Province 2024JJ6303, and the Research Foundation of the Education Department of Hunan Province 23B0056. (Corresponding author: Xuewei Cheng.)}
 \thanks{This study involved human participants and was conducted in accordance with the principles of the Declaration of Helsinki. The research protocol entitled “A Risk-Controlled Framework with Guaranteed Confidence for Lung Adenocarcinoma Classification” was reviewed and approved by the Medical Ethics Committee of Hunan Cancer Hospital (approval no. 2026 Scientific Research Expedited Review [106]) on April 22, 2026. The committee granted a final decision of “Approved” under the expedited review procedure. All procedures involving human subjects were performed in compliance with relevant institutional and national regulations.}
-\thanks{Jianxu Wang, MOE-LCSM, School of Mathematics and Statistics, Hunan Normal University. E-mail~address: 202330125008@hunnu.edu.cn}
-\thanks{Huijun Zhou, Medical Oncology, Hunan Cancer Hospital. E-mail~address: zhouhuijun@hnca.org}
+\thanks{Jianxu Wang, MOE-LCSM, School of Mathematics and Statistics, Hunan Normal University. E-mail~address: 202330125008@hunnu.edu.cn.}
+\thanks{Huijun Zhou, Medical Oncology, Hunan Cancer Hospital. E-mail~address: zhouhuijun@hnca.org.}
 \thanks{Xuewei Cheng, MOE-LCSM, School of Mathematics and Statistics, Hunan Normal University; Department of Statistics, University of California, Riverside. E-mail~address: xwcheng@hunnu.edu.cn.}
 }
 
@@ -59,7 +60,7 @@ To close the gap between model performance and clinical reliability, we introduc
 \begin{itemize}
 \item \textbf{Training Phase I:} We adopt cost-sensitive learning to reshape the decision boundary, explicitly increasing the penalty for missed diagnoses and improving the model’s intrinsic sensitivity \cite{el2010foundations}.
 \item \textbf{Calibration Phase II:} We apply Neyman–Pearson (NP) calibration \cite{rigollet2011neyman,tong2018neyman} to move beyond fixed thresholds. This provides a statistical guarantee that the false-negative rate remains below a user-specified level with high probability.
-\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk \textcolor{red}{and/or} \textcolor{red}{Is the English expression here not very accurate?}FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective,dai2017tumor}.
+\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk and/or FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective,dai2017tumor}.
 \end{itemize}
 
 Based on these three phases, our main contributions are threefold:
@@ -112,7 +113,7 @@ We propose a framework designed to build a trustworthy diagnostic system for det
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[scale=0.85]{figures/20260209.png}
+  \includegraphics[scale=0.95]{frame_figure.pdf}
   \caption{Overview of the three-stage framework. (a) A ViT-based MIL baseline; (b) cost‑sensitive learning with threshold calibration to control false‑negative risk; (c) selective classification that abstains on uncertain samples for human review.}
   \label{fig:framework}
 \end{figure*}
@@ -151,10 +152,7 @@ Finally, a linear classifier \( h_{\mathrm{c}}: \mathbb{R}^{d} \to \mathbb{R} \)
 
 \subsection{Phase I: Risk-Aware Training via Cost-Sensitive Learning}\label{sec:phase1_method}
 
-While the baseline model follows a standard training objective that minimizes average classification error, this approach overlooks the clinical asymmetry of risks: false negatives (FN) are considerably more costly than false positives (FP) in high‑stakes diagnostic settings. To incorporate this asymmetry directly into representation learning, \textcolor{red}{we adopt} a cost‑sensitive learning (CSL) strategy.
-\textcolor{red}{There are two repetitive expressions of the same phrase in this context.}\\
-\textcolor{red}{We adopt} a class‑weighted cross‑entropy objective to enforce higher penalties on false negatives \cite{he2009learning}.  
-Let \(\mathcal{D} = \{(X_i, y_i)\}_{i=1}^{n}\) denote the training set, where \(y_i \in \{0,1\}\) indicates the label (1 for MIP‑present, 0 for MIP‑absent) and \(\hat{p}_i\) is the predicted positive probability. The cost‑sensitive loss is defined as  
+While the baseline model follows a standard training objective that minimizes average classification error, this approach overlooks the clinical asymmetry of risks: false negatives (FN) are considerably more costly than false positives (FP) in high‑stakes diagnostic settings. To incorporate this asymmetry directly into representation learning, we adopt a cost‑sensitive learning (CSL) strategy to enforce higher penalties on false negatives \cite{he2009learning}.  Let \(\mathcal{D} = \{(X_i, y_i)\}_{i=1}^{n}\) denote the training set, where \(y_i \in \{0,1\}\) indicates the label (1 for MIP‑present, 0 for MIP‑absent) and \(\hat{p}_i\) is the predicted positive probability. The cost‑sensitive loss is defined as  
 \begin{equation*}
     \mathcal{L}_{\mathrm{cs}} = - \frac{1}{n} \sum_{i=1}^{n} \Bigl[ w_{1} \, y_i \log(\hat{p}_i) + w_{0} \, (1-y_i) \log(1-\hat{p}_i) \Bigr].
 \end{equation*}
@@ -229,14 +227,7 @@ We formulate a differentiable objective to approximate the constraints in Theore
 \begin{equation*}
     \mathcal{L} = \gamma \left(\hat{R}_n(f,g) + \Psi(g)\right) + (1-\gamma) \ell_{\mathrm{ce}}(h(\mathbf{z}_i), y_i),
 \end{equation*}
-where $\gamma$ balances between selective optimization and auxiliary classification, mirroring the role of the theoretical risk bound $\epsilon$. Minimizing $\mathcal{L}$ encourages the model to select samples with low prediction error, driving $\hat{R}_n(f,g)$ toward the theoretical guarantee. We then introduce four cases to achieve explicit control over risk and/or false negative rate (FNR) as illustrated in Figure \ref{F1}.
-
-\begin{figure*}[htbp]
-  \centering
-  \includegraphics{ACM_KDD-6.pdf}
-  \caption{A technical roadmap: selective classification with Risk \& FNR control.}
-  \label{F1}
-\end{figure*}
+where $\gamma$ balances between selective optimization and auxiliary classification, mirroring the role of the theoretical risk bound $\epsilon$. Minimizing $\mathcal{L}$ encourages the model to select samples with low prediction error, driving $\hat{R}_n(f,g)$ toward the theoretical guarantee. We then introduce four cases to achieve explicit control over risk and/or false negative rate (FNR).
 
 \textbf{Case 1: Risk Control.}
 Empirical threshold selection via calibration:
@@ -291,7 +282,9 @@ Selective inference typically pursues two objectives: controlling a risk measure
 While Case 2 effectively controls the FNR, it may do so at the cost of unacceptably low coverage. This occurs because the model treats false negatives and false positives equally during training, failing to recognize the clinical severity of missing a positive case. Consequently, the resulting threshold tends to be overly aggressive, leading to high abstention rates and placing a substantial review burden on human experts. A natural remedy, analogous to the approach in Case 3, is to incorporate cost‑sensitive learning during training. By penalizing false negatives more heavily, the model learns to reduce such errors, which in turn yields a more conservative threshold and thereby improves coverage while maintaining strong FNR control.
 
 \section{Experiments and Results}\label{sec:experiments}
-\textcolor{red}{All questions：
+
+\textcolor{red}{
+All questions：
 1. Lines 296–300 in Section 4.1 contain substantial duplicated content.
 The two passages are nearly verbatim repetitions of the following settings:
 - AdamW optimizer (learning rate of $1\times10^{-5}$, weight decay of 0.05)
@@ -306,10 +299,10 @@ The numbers of positive and negative samples are not specified (1519 positive ve
 Different experimental settings adopt distinct validation protocols: the Baseline and CSL models use standard 5-fold cross-validation; NP and CSL+NP adopt ten repeated Monte Carlo Cross-Validation (MCCV); SelectiveNet employs 5-fold cross-validation combined with swap calibration. We suggest providing a unified description of all validation strategies in Section 4.1, rather than introducing them separately at the beginning of each subsection. In addition, swap calibration is applied to all experimental cases of SelectiveNet.\\
 4. The validation description at Line 306 in Section 4.2 is redundant with Section 4.1.
 The sentence *“We performed a stratified 5-fold cross-validation at the image level”* in Line 306 has already been stated in Line 298 of Section 4.1.\\
-5. Section 4.3 contains overly lengthy descriptions of competing models.
-Detailed algorithm illustrations for CLAM-SB, DS-MIL, DTFD-MIL, and TransMIL each occupy 4–6 lines. Since these are well-established published methods, their introductions can be appropriately condensed into brief summaries.\\
-6. Section 4.3, Line 439: *“Phase II introduces Neyman–Pearson...”*
-The subsection title already corresponds to Phase II, and the MCCV procedure has been elaborated in Lines 430–437. The statement *“Phase II introduces...”* constitutes a redundant third introduction of the same content.}
+5. Section 4.3 contains overly lengthy descriptions of competing models. Detailed algorithm illustrations for CLAM-SB, DS-MIL, DTFD-MIL, and TransMIL each occupy 4–6 lines. Since these are well-established published methods, their introductions can be appropriately condensed into brief summaries.\\
+6. Section 4.3, Line 439: "Phase II introduces Neyman–Pearson..."
+The subsection title already corresponds to Phase II, and the MCCV procedure has been elaborated in Lines 430–437. The statement "Phase II introduces..." constitutes a redundant third introduction of the same content.}
+
 In this section, we systematically evaluate the proposed framework through a cascade of eight complementary experiments. We first describe the experimental setup in Subsection \ref{S3-1} and then report the performance of our baseline model in Subsection \ref{S3-2}, followed by comparisons with competing state-of-the-art MIL architectures in Subsection \ref{S3-3}. To address the inherent limitations of architectural design alone, we progressively investigate three phases: risk-aware training via cost-sensitive learning in Subsection \ref{sec:phase1_results}, threshold selection via NP calibration in Subsection \ref{sec:phase2_results}, and the synergistic effect of cost-sensitive learning boosting NP calibration in Subsection \ref{S3-4}. We further extend to selective classification with conformal risk or FNR control in Subsection \ref{sec:phase3_results}, and conclude with external validation in Subsection \ref{S3-6}. Together, these subsections form a coherent progression from standard benchmarking to risk-controllable and reliable decision-making.
 
 \subsection{Experimental Setup}\label{S3-1}
@@ -495,8 +488,8 @@ Phase II introduces Neyman–Pearson (NP) thresholding to obtain formal, statist
 
 These results illustrate how Neyman–Pearson thresholding enables precise, statistically grounded control of the safety–efficiency trade‑off. Tighter miss‑risk targets shift the decision threshold downward, thereby lowering the false negative rate (FNR) at the expense of overall accuracy. Compared with cost-sensitive learning, NP can exactly control the false negative rate (FNR) at a specified level. However, it requires holding out a positive calibration set for threshold tuning, which not only reduces the number of samples in the training set but also exacerbates the class imbalance between positive and negative samples. This fully validates the no-free-lunch theorem.
 
-\subsection{Phase II*: Cost-Sensitive Learning Boosting Neyman–Pearson Calibration}\label{S3-4}
-\textcolor{red}{I think the title here should be revised; otherwise, it is not sufficiently standardized. It is mainly that the notation II* is not sufficiently standard.}
+\subsection{Enhanced Phase II: Cost-Sensitive Learning Boosting Neyman–Pearson Calibration}\label{S3-4}
+
 Phase II confirms that Neyman–Pearson (NP) calibration can theoretically enforce a strict upper bound on the false‑negative rate (FNR). However, applying an aggressive safety target (e.g., FNR $\leq 1\%$) to the baseline model imposes a substantial practical cost: the decision threshold must be lowered drastically, leading to a false‑positive rate (FPR) of 59.37\% and a marked drop in overall accuracy.
 
 In this phase, we examine whether cost‑sensitive learning (CSL) can serve as a more effective training precursor to Neyman–Pearson (NP) calibration. We hypothesize that because CSL explicitly penalizes false negatives during training, it shifts the predicted probability distribution of positive samples toward higher values—as observed in Phase I. Consequently, under NP calibration, a safe threshold satisfying the same target FNR should be attainable with less severe degradation in specificity compared to the baseline.
@@ -553,7 +546,14 @@ A Multiple-Instance Learning (MIL) model with an explicit reject option, followi
  
 To ensure statistical reliability of the empirical threshold $\tau^*$, we employ a Stratified 5-Fold Cross-Validation scheme with a Swap-Calibration strategy. In each fold, the held-out validation set is split into two disjoint subsets $\mathcal{D}_A$ and $\mathcal{D}_B$. Two independent evaluations are performed per fold: first, calibrating $\tau^*$ on $\mathcal{D}_A$ and evaluating on $\mathcal{D}_B$; second, swapping the roles by calibrating on $\mathcal{D}_B$ and evaluating on $\mathcal{D}_A$. This yields $10$ independent assessments in total, ensuring that reported safety metrics—Risk and Coverage—are computed strictly on held-out data, thereby reducing variance due to calibration.
 
-Following the above implementation and evaluation setup, experiments are organized into two clinical paradigms shown in Figure \ref{F1}. Cases 1 and 3 target general reliability by calibrating the model to satisfy a Risk Target $\alpha \in \{1\%, 3\%, 5\%, 10\%\}$. In contrast, Cases 2 and 4 emphasize sensitivity, enforcing a False Negative Rate (FNR) Target with the same $\alpha$ values to reduce missed diagnoses.
+Following the above implementation and evaluation setup, experiments are organized into two clinical paradigms shown in Figure \ref{F1}. Cases 1 and 3 target general reliability by calibrating the model to satisfy a Risk Target $\alpha \in \{1\%, 3\%, 5\%, 10\%\}$. In contrast, Cases 2 and 4 emphasize sensitivity, enforcing a False Negative Rate (FNR) Target with the same $\alpha$ values to reduce missed diagnoses. The workflows and comparative results of the four cases are summarized in Figure \ref{F1}.
+
+\begin{figure*}[htbp]
+  \centering
+  \includegraphics[scale=0.95]{SC.pdf}
+  \caption{The comparison of selective classification with Risk \& FNR control.}
+  \label{F1}
+\end{figure*}
 
 \subsubsection{\textbf{Case 1: Selective Classification with Risk Control}}
 \label{sec:case1_results}
@@ -610,8 +610,7 @@ Unlike Case~1—where the FNR rises substantially (up to $20\%$) under general r
 \subsubsection{\textbf{Case 3: Risk Control with Cost-sensitive Learning}}
 \label{sec:case3_results}
 
-To systematically evaluate the impact of cost-sensitive learning on risk control, we extend the baseline SelectiveNet by introducing weights $w_1 \in \{5, 10\}$ on the positive class. This explicitly penalizes \textcolor{red}{false negatives} during training, thereby reducing the high FNR observed in Case~1.
-\textcolor{red}{This section should focus on risk rather than false negatives; the current expression is inaccurate.}
+To systematically evaluate the impact of cost-sensitive learning on risk control, we extend the baseline SelectiveNet by introducing weights $w_1 \in \{5, 10\}$ on the positive class. This explicitly penalizes false negatives during training, thereby reducing the high FNR observed in Case~1.
 \begin{table}[htbp]
     \centering
     \caption{The selective classification performance of Case 3 ($w_{1}=5$ and $w_{1}=10$).}
@@ -639,7 +638,7 @@ To systematically evaluate the impact of cost-sensitive learning on risk control
     }
 \end{table}
 
-Table~\ref{tab:case3_results} presents the results with positive-class weights $w_1 = 5$ and $10$. Compared with Case~1, cost weighting significantly suppresses the FNR: at $\alpha=5\%$, the FNR drops from $12.91\%$ to $7.18\%$ ($w_1=5$) and further to $2.11\%$ ($w_1=10$). This confirms that the reweighted loss effectively reduces missed positives. Under strict risk control ($\alpha=1\%$), the model attains near-zero FNR ($0.33\%$ for $w_1=5$, $0.00\%$ for $w_1=10$) by abstaining on most uncertain samples, yielding coverages of $19.09\%$ and $3.62\%$, respectively. This indicates a trade-off: penalizing false negatives encourages the model to reject ambiguous cases to simultaneously satisfy a stringent overall risk bound, yielding a “hyper-safe” operating point with minimal missed diagnoses in the accepted subset.
+Table~\ref{tab:case3_results} presents the results with positive-class weights $w_1 = 5$ and $10$. Compared with Case~1, cost weighting significantly suppresses the FNR: at $\alpha=5\%$, \textcolor{red}{I think this statement may cause misunderstandings. It should be clarified here that $\alpha$ refers to the risk control threshold.} the FNR drops from $12.91\%$ to $7.18\%$ ($w_1=5$) and further to $2.11\%$ ($w_1=10$). This confirms that the reweighted loss effectively reduces missed positives. Under strict risk control ($\alpha=1\%$), the model attains near-zero FNR ($0.33\%$ for $w_1=5$, $0.00\%$ for $w_1=10$) by abstaining on most uncertain samples, yielding coverages of $19.09\%$ and $3.62\%$, respectively. This indicates a trade-off: penalizing false negatives encourages the model to reject ambiguous cases to simultaneously satisfy a stringent overall risk bound, yielding a “hyper-safe” operating point with minimal missed diagnoses in the accepted subset.
 
 
 
@@ -745,8 +744,8 @@ On the external dataset, the baseline achieved an accuracy of 93.64\% but incurr
 We further evaluated the selective inference framework on the external dataset and Table~\ref{tab2} summarizes the results. Under both risk control and FNR control, the framework achieved well calibrated performance on the external data, closely mirroring the behavior observed on our local validation set (Tables~\ref{tab:case3_results} and~\ref{tab:case4_results}). Overall, these results demonstrate that the framework maintains satisfactory predictive accuracy and selective classification performance on external data, consistent with its performance on local data.
 
 \section{Conclusion}
-\textcolor{red}{In my opinion, the conclusion section is relatively underdeveloped. It is necessary to supplement a discussion on the experimental results and clarify the clinical implications of the proposed framework.}
-This paper employs cost-sensitive learning to increase model sensitivity to false negative errors during training. Through threshold calibration, false negatives are precisely controlled below a predefined level. Finally, a selective classification framework is adopted to abstain from low-confidence predictions, thereby enhancing the reliability of model outputs.
+
+In this work, we present a risk-controlled framework for MIP subtype detection in lung adenocarcinoma that systematically resolves the trade-off between diagnostic safety and throughput. Cost-sensitive learning reshapes the decision boundary by upweighting false-negative penalties, thereby boosting intrinsic model sensitivity prior to any threshold adjustment. Building on this shifted score distribution, Neyman--Pearson calibration translates the improved separability into a rigorous statistical guarantee that the false-negative rate remains below a clinically specified level, demonstrating that the two components are mutually reinforcing rather than independent. Selective classification further consolidates reliability by allowing the model to abstain on uncertain inputs, restricting automated decisions to a high-confidence subset while deferring ambiguous cases to pathologists. Together, these three phases achieve a principled balance between safety and efficiency, offering a deployable pathway toward trustworthy clinical decision support in high-stakes pathological diagnosis.
 
 However, several issues merit further investigation. First, while the NP umbrella method can control the overall FNR at a specified level, which is an algorithm and data independent guarantee, it requires a separate set of positive validation samples. In clinical practice, positive samples are often the minority class, which can exacerbate training difficulty and compromise predictive accuracy. Second, although selective classification provides a theoretical lower bound on the risk–coverage tradeoff, controlling overall risk does not necessarily guarantee control of the FNR. Although cost-sensitive learning (Case 2 in Section \ref{sec:phase3_method}) empirically reduces the FNR, its theoretical assurance remains an open question for future work.
 
