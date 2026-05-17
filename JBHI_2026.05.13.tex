@@ -57,9 +57,9 @@ We aim to address two key challenges that arise when deploying a standard deep l
 To close the gap between model performance and clinical reliability, we introduce a holistic risk-controlled framework that operates across three stages of the learning pipeline:
 
 \begin{itemize}
-\item \textbf{Training Phase I:} We adopt cost-sensitive learning to reshape the decision boundary, explicitly increasing the penalty for missed diagnoses and improving the model’s intrinsic sensitivity \cite{el2010foundations}.
+\item \textbf{Training Phase I:} We adopt cost-sensitive learning to reshape the decision boundary, explicitly increasing the penalty for missed diagnoses and improving the model’s intrinsic sensitivity \cite{he2009learning}.
 \item \textbf{Calibration Phase II:} We apply Neyman–Pearson (NP) calibration \cite{rigollet2011neyman,tong2018neyman} to move beyond fixed thresholds. This provides a statistical guarantee that the false-negative rate remains below a user-specified level with high probability.
-\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk and/or FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective,dai2017tumor}.
+\item \textbf{Decision Phase III:} We integrate selective classification with conformal risk and/or FNR control \cite{angelopoulos2022conformal}, enabling the model to abstain from uncertain inputs. This constructs a reliable accepted subset for automation, while deferring high-risk cases to pathologists \cite{geifman2019selectivenet,geifman2017selective}.
 \end{itemize}
 
 Based on these three phases, our main contributions are threefold:
